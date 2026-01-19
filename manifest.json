@@ -1,0 +1,17 @@
+{
+  "short_name": "Todo",
+  "name": "Todo Widget - 할 일 관리",
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#063064",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
+}

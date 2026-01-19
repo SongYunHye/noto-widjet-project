@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/noto-widjet-project/static/css/main.0185bae3.css",
+    "main.js": "/noto-widjet-project/static/js/main.802a6c10.js",
+    "static/media/ico_logo.png": "/noto-widjet-project/static/media/ico_logo.1caf1ccf0da4f60a4063.png",
+    "index.html": "/noto-widjet-project/index.html",
+    "main.0185bae3.css.map": "/noto-widjet-project/static/css/main.0185bae3.css.map",
+    "main.802a6c10.js.map": "/noto-widjet-project/static/js/main.802a6c10.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0185bae3.css",
+    "static/js/main.802a6c10.js"
+  ]
+}
