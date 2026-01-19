@@ -328,6 +328,7 @@ button {
   }
 
   .tag-item-left {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -341,6 +342,8 @@ button {
   }
 
   .tag-name {
+    position: relative;
+    z-index: 9;
     color: $text-dark;
     font-family: "Noto Sans KR", Roboto, sans-serif;
     font-size: 14px;
