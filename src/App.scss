@@ -304,6 +304,199 @@ button {
   }
 }
 
+.tag-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  .tag-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgb(0 0 0 / 5%);
+    transition: $transition-base;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgb(6 48 100 / 3%);
+    }
+  }
+
+  .tag-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tag-item-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tag-name {
+    color: $text-dark;
+    font-family: "Noto Sans KR", Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .tag-count {
+    color: $text-medium;
+    font-family: "Noto Sans KR", Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .tag-color-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: $text-medium;
+    cursor: pointer;
+    transition: $transition-base;
+
+    .tag-color-btn-icon {
+      width: 3px;
+      height: 3px;
+      background: $text-medium;
+      border-radius: 50%;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 3px;
+        height: 3px;
+        background: $text-medium;
+        transform: translateX(-50%);
+        border-radius: 50%;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 3px;
+        height: 3px;
+        background: $text-medium;
+        transform: translateX(-50%);
+        border-radius: 50%;
+      }
+    }
+
+    &:hover {
+      background: rgb(0 0 0 / 5%);
+      color: $text-dark;
+    }
+
+    svg {
+      display: block;
+    }
+  }
+
+  .empty-tag-message {
+    padding: 48px 24px;
+    color: $text-medium;
+    font-family: "Noto Sans KR", Roboto, sans-serif;
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+/* 색상 선택 팝업 */
+.color-picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: transparent;
+}
+
+.color-picker-popup {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 301;
+  min-width: 200px;
+  padding: 16px;
+  background: $bg-white;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 15%);
+}
+
+.color-picker-title {
+  margin: 0 0 12px;
+  padding: 0;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.color-picker-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.color-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: rgb(6 48 100 / 5%);
+  }
+
+  &.selected {
+    background: rgb(6 48 100 / 8%);
+  }
+}
+
+.color-circle {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgb(0 0 0 / 10%);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.color-name {
+  flex: 1;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.color-check {
+  flex-shrink: 0;
+  color: $primary-color;
+}
+
 .side-menu-footer {
   position: absolute;
   right: 0;
@@ -957,6 +1150,119 @@ button {
   }
 }
 
+/* Select 컴포넌트 */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgb(255 255 255 / 80%);
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:focus {
+    background: $bg-white;
+    border-color: $border-dark;
+    outline: none;
+  }
+
+  &:hover {
+    background: $bg-white;
+  }
+}
+
+.select-value {
+  flex: 1;
+  color: $text-dark;
+
+  &.placeholder {
+    color: $text-light;
+  }
+}
+
+.select-arrow {
+  flex-shrink: 0;
+  margin-left: 8px;
+  color: $text-medium;
+  transition: transform 0.2s ease;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  z-index: 250;
+  margin: 0;
+  padding: 0;
+  background: $bg-white;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: $transition-base;
+
+  svg {
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: $primary-color;
+  }
+
+  &:hover,
+  &.focused {
+    background: rgb(6 48 100 / 8%);
+    color: $primary-color;
+  }
+
+  &:active {
+    background: rgb(6 48 100 / 12%);
+  }
+
+  &.selected {
+    color: $primary-color;
+    font-weight: 600;
+  }
+}
+
 .popup-actions {
   display: flex;
   gap: 12px;
@@ -999,6 +1305,138 @@ button {
   &:active {
     transform: translateY(0);
   }
+}
+
+.text-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgb(255 255 255 / 80%);
+  border: 1px solid rgb(0 0 0 / 5%);
+  border-radius: 12px;
+  color: #2c3e50;
+  font-family: Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: #999;
+  }
+
+  &:focus {
+    background: rgb(255 255 255 / 100%);
+  }
+
+  &:active {
+    background: rgb(255 255 255 / 100%);
+  }
+
+  &:hover {
+    background: rgb(255 255 255 / 100%);
+  }
+}
+
+/* 검색 결과 */
+.search-results {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.search-results-title {
+  margin: 0 0 12px;
+  padding: 0;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.search-results-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgb(200 200 200 / 10%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(200 200 200 / 30%);
+    border-radius: 3px;
+  }
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  transition: $transition-base;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgb(6 48 100 / 3%);
+  }
+
+  &.completed {
+    opacity: 0.6;
+
+    .search-result-text {
+      color: $text-gray;
+      text-decoration: line-through;
+    }
+  }
+}
+
+.search-result-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.search-result-text {
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: break-word;
+}
+
+.search-result-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.search-result-date {
+  flex-shrink: 0;
+  color: $text-medium;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.search-no-results {
+  padding: 48px 24px;
+  color: $text-medium;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* 투두 리스트 */
@@ -1084,25 +1522,56 @@ button {
 
 /* 태그별 그룹 */
 .todo-group {
-  margin-bottom: 30px;
-
-  &:last-child {
-    margin-bottom: 0;
+  &+& {
+    margin-top: 41px;
   }
 }
 
 .todo-group-tag {
-  margin: 0 0 12px 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px 18px;
   padding: 0;
-  color: $primary-color;
+  color: $text-dark;
   font-family: "Fjalla One", sans-serif;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
+.todo-group-tag-txt {
+  position: relative;
+
+  .tag-name {
+    position: relative;
+    z-index: 9;
+  }
+}
+
+
+/* 태그 색상 박스 */
+.tag-color-box {
+  position: absolute;
+  bottom: 0;
+  z-index: 8;
+  width: 100%;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0.5;
+  flex-shrink: 0;
+
+  &.small {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+}
+
 /* 투두 아이템 */
 .todo-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 13px;
@@ -1122,12 +1591,49 @@ button {
       color: $text-gray;
       text-decoration: line-through;
     }
+
+    .drag-handle {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+  }
+
+  &.draggable {
+    cursor: move;
+
+    &:active {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
   }
 
   &:hover {
     .todo-actions {
       opacity: 1;
     }
+
+    &:not(.completed) .drag-handle {
+      opacity: 1;
+    }
+  }
+}
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: $text-medium;
+  opacity: 0;
+  cursor: grab;
+  transition: $transition-base;
+
+  svg {
+    display: block;
+  }
+
+  &:active {
+    cursor: grabbing;
   }
 }
 
@@ -1167,18 +1673,31 @@ button {
     transition: $transition-base;
     flex-shrink: 0;
 
-    &::after {
-      content: "";
+    &::before {
       position: absolute;
-      top: 2px;
-      left: 5px;
-      width: 4px;
+      top: -2px;
+      left: 7px;
+      width: 10px;
       height: 8px;
-      border: solid $bg-white;
+      background: white;
+      opacity: 0;
+      transition: all 0.3s ease;
+      content: "";
+    }
+
+    &::after {
+      position: absolute;
+      top: -3px;
+      left: 7px;
+      width: 4px;
+      height: 10px;
+      background: white;
+      border: solid #063064;
+      opacity: 0;
+      transition: all 0.3s ease;
+      content: "";
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
-      opacity: 0;
-      transition: $transition-base;
     }
   }
 
@@ -1189,15 +1708,15 @@ button {
   }
 
   &:hover .ico_check {
-    border-color: $secondary-color;
+    // border-color: $secondary-color;
   }
 }
 
 .inp_comm:checked+.lab_comm {
   .ico_check {
-    background: $primary-color;
     border-color: $primary-color;
 
+    &::before,
     &::after {
       opacity: 1;
     }

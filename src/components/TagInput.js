@@ -115,6 +115,7 @@ function TagInput({ value, onChange, existingTags, placeholder = "Enter or selec
         className="tag-input"
         placeholder={placeholder}
         value={value}
+        autoComplete='off'
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => {
           if (filteredTags.length > 0) {

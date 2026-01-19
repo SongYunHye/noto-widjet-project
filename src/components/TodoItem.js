@@ -1,9 +1,26 @@
 import React from 'react';
 import Checkbox from './Checkbox';
 
-function TodoItem({ todo, onToggle, onDelete, onEdit }) {
+function TodoItem({ todo, onToggle, onDelete, onEdit, onDragStart, onDragOver, onDragEnd }) {
   return (
-    <div className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+    <div 
+      className={`todo-item ${todo.completed ? 'completed' : ''} ${!todo.completed ? 'draggable' : ''}`}
+      draggable={!todo.completed}
+      onDragStart={() => !todo.completed && onDragStart && onDragStart(todo)}
+      onDragOver={(e) => !todo.completed && onDragOver && onDragOver(e, todo)}
+      onDragEnd={() => !todo.completed && onDragEnd && onDragEnd()}
+    >
+      <div className="drag-handle" title="드래그하여 순서 변경">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="5" r="1"/>
+          <circle cx="9" cy="12" r="1"/>
+          <circle cx="9" cy="19" r="1"/>
+          <circle cx="15" cy="5" r="1"/>
+          <circle cx="15" cy="12" r="1"/>
+          <circle cx="15" cy="19" r="1"/>
+        </svg>
+      </div>
+      
       <Checkbox
         id={`todo-${todo.id}`}
         checked={todo.completed}
@@ -19,6 +36,7 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
       <div className="todo-actions">
         <button
           className="todo-action-btn edit"
+          disabled={todo.completed}
           onClick={() => onEdit(todo)}
           title="수정"
         >
@@ -26,6 +44,7 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
         </button>
         <button
           className="todo-action-btn delete"
+          disabled={todo.completed}
           onClick={() => onDelete(todo.id)}
           title="삭제"
         >

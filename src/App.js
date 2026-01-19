@@ -3,6 +3,7 @@ import './App.scss';
 import logo from './assets/img/ico_logo.png';
 import TodoItem from './components/TodoItem';
 import TagInput from './components/TagInput';
+import Select from './components/Select';
 
 function App() {
   // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
@@ -36,6 +37,14 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuDetailPage, setMenuDetailPage] = useState(null); // 'background' 등
   const [backgroundType, setBackgroundType] = useState('memo'); // 'note', 'memo', 'grid'
+  const [draggedTodo, setDraggedTodo] = useState(null); // 드래그 중인 todo
+  const [searchPopupOpen, setSearchPopupOpen] = useState(false); // 검색 팝업
+  const [searchKeyword, setSearchKeyword] = useState(''); // 검색 키워드
+  const [selectedSearchTag, setSelectedSearchTag] = useState('all'); // 검색 태그 필터
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과
+  const [hasSearched, setHasSearched] = useState(false); // 검색 실행 여부
+  const [tagColors, setTagColors] = useState({}); // 태그별 색상 매핑 {tagName: colorValue}
+  const [colorPickerTag, setColorPickerTag] = useState(null); // 색상 선택 중인 태그
 
   // 디바이스 감지
   useEffect(() => {
@@ -56,7 +65,13 @@ function App() {
     const savedTodos = localStorage.getItem('todos');
     if (savedTodos) {
       try {
-        setTodos(JSON.parse(savedTodos));
+        const parsed = JSON.parse(savedTodos);
+        // order 필드가 없는 경우 추가
+        const todosWithOrder = parsed.map((todo, index) => ({
+          ...todo,
+          order: todo.order !== undefined ? todo.order : index
+        }));
+        setTodos(todosWithOrder);
       } catch (e) {
         console.error('Failed to parse todos:', e);
       }
@@ -68,6 +83,22 @@ function App() {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
+  // 태그 색상 로컬 스토리지에서 불러오기
+  useEffect(() => {
+    const savedTagColors = localStorage.getItem('tagColors');
+    if (savedTagColors) {
+      try {
+        setTagColors(JSON.parse(savedTagColors));
+      } catch (e) {
+        console.error('Failed to parse tagColors:', e);
+      }
+    }
+  }, []);
+
+  // 태그 색상 로컬 스토리지에 저장
+  useEffect(() => {
+    localStorage.setItem('tagColors', JSON.stringify(tagColors));
+  }, [tagColors]);
 
   // 기존 태그 목록 (유니크한 태그만)
   const existingTags = [...new Set(todos.map(todo => todo.tag).filter(Boolean))];
@@ -83,6 +114,7 @@ function App() {
       completed: false,
       dueDate: dueDate || null,
       tag: tag.trim() || null,
+      order: todos.length, // 순서 추가
       createdAt: new Date().toISOString()
     };
 
@@ -145,6 +177,125 @@ function App() {
       setTag('');
       setIsClosingPopup(false);
     }, 300); // 애니메이션 시간과 동일
+  };
+
+  // 드래그 시작
+  const handleDragStart = (todo) => {
+    setDraggedTodo(todo);
+  };
+
+  // 드래그 오버
+  const handleDragOver = (e, targetTodo) => {
+    e.preventDefault();
+    
+    if (!draggedTodo || draggedTodo.id === targetTodo.id) return;
+    if (draggedTodo.completed || targetTodo.completed) return; // 완료된 항목은 드래그 불가
+    if (draggedTodo.tag !== targetTodo.tag) return; // 같은 태그 그룹 내에서만 드래그 가능
+
+    const draggedIndex = todos.findIndex(t => t.id === draggedTodo.id);
+    const targetIndex = todos.findIndex(t => t.id === targetTodo.id);
+
+    if (draggedIndex === targetIndex) return;
+
+    // 배열 재정렬
+    const newTodos = [...todos];
+    const [removed] = newTodos.splice(draggedIndex, 1);
+    newTodos.splice(targetIndex, 0, removed);
+
+    setTodos(newTodos);
+    setDraggedTodo(removed);
+  };
+
+  // 드래그 종료
+  const handleDragEnd = () => {
+    setDraggedTodo(null);
+  };
+
+  // 검색 팝업 열기
+  const openSearchPopup = () => {
+    setSearchPopupOpen(true);
+    setSearchKeyword('');
+    setSelectedSearchTag('all');
+    setSearchResults([]);
+    setHasSearched(false);
+  };
+
+  // 검색 팝업 닫기
+  const closeSearchPopup = () => {
+    setSearchPopupOpen(false);
+    setSearchKeyword('');
+    setSelectedSearchTag('all');
+    setSearchResults([]);
+    setHasSearched(false);
+  };
+
+  // 검색 실행
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setHasSearched(true);
+
+    // 필터링
+    let results = todos;
+
+    // 태그 필터
+    if (selectedSearchTag !== 'all') {
+      if (selectedSearchTag === 'untagged') {
+        results = results.filter(todo => !todo.tag);
+      } else {
+        results = results.filter(todo => todo.tag === selectedSearchTag);
+      }
+    }
+
+    // 키워드 필터
+    if (searchKeyword.trim() !== '') {
+      const keyword = searchKeyword.trim().toLowerCase();
+      results = results.filter(todo => 
+        todo.text.toLowerCase().includes(keyword) ||
+        (todo.tag && todo.tag.toLowerCase().includes(keyword))
+      );
+    }
+
+    setSearchResults(results);
+  };
+
+  // 색상 팔레트
+  const colorPalette = [
+    { name: 'Default', value: 'default', color: '#e0e0e0' },
+    { name: 'Gray', value: 'gray', color: '#9e9e9e' },
+    { name: 'Brown', value: 'brown', color: '#a1887f' },
+    { name: 'Orange', value: 'orange', color: '#ffb74d' },
+    { name: 'Yellow', value: 'yellow', color: '#fff176' },
+    { name: 'Green', value: 'green', color: '#81c784' },
+    { name: 'Blue', value: 'blue', color: '#64b5f6' },
+    { name: 'Purple', value: 'purple', color: '#ba68c8' },
+    { name: 'Pink', value: 'pink', color: '#f06292' },
+    { name: 'Red', value: 'red', color: '#e57373' }
+  ];
+
+  // 태그 색상 변경
+  const changeTagColor = (tagName, colorValue) => {
+    setTagColors(prev => ({
+      ...prev,
+      [tagName]: colorValue
+    }));
+    setColorPickerTag(null);
+  };
+
+  // 색상 피커 열기
+  const openColorPicker = (tagName) => {
+    setColorPickerTag(tagName);
+  };
+
+  // 색상 피커 닫기
+  const closeColorPicker = () => {
+    setColorPickerTag(null);
+  };
+
+  // 태그 색상 가져오기
+  const getTagColor = (tagName) => {
+    const colorValue = tagColors[tagName] || 'default';
+    const colorInfo = colorPalette.find(c => c.value === colorValue);
+    return colorInfo || colorPalette[0];
   };
 
   // 날짜 포맷팅 (YYYY.MM.DD)
@@ -263,9 +414,19 @@ function App() {
     return groups;
   }, {});
 
-  // 태그가 있는 그룹들과 태그가 없는 그룹을 분리
-  const taggedGroups = Object.entries(groupedByTag).filter(([tag]) => tag !== 'null');
-  const untaggedTodos = groupedByTag['null'] || [];
+  // 각 그룹 내에서 완료 여부에 따라 정렬 (미완료 먼저, 완료 나중)
+  const sortByCompletion = (todos) => {
+    return [...todos].sort((a, b) => {
+      if (a.completed === b.completed) return 0;
+      return a.completed ? 1 : -1;
+    });
+  };
+
+  // 태그가 있는 그룹들과 태그가 없는 그룹을 분리하고 정렬
+  const taggedGroups = Object.entries(groupedByTag)
+    .filter(([tag]) => tag !== 'null')
+    .map(([tag, todos]) => [tag, sortByCompletion(todos)]);
+  const untaggedTodos = sortByCompletion(groupedByTag['null'] || []);
 
 
   return (
@@ -300,6 +461,12 @@ function App() {
                 <li onClick={() => setMenuOpen(false)}>
                   <span>홈</span>
                 </li>
+                <li onClick={() => setMenuDetailPage('tags')}>
+                  <span>태그 관리</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </li>
                 <li onClick={() => setMenuDetailPage('background')}>
                   <span>배경 설정</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -308,6 +475,102 @@ function App() {
                 </li>
               </ul>
             </nav>
+            <div className="side-menu-footer">
+              <p>© dea. All rights reserved.</p>
+            </div>
+          </>
+        )}
+
+        {/* 태그 관리 상세 페이지 */}
+        {menuDetailPage === 'tags' && (
+          <>
+            <div className="side-menu-header detail">
+              <button 
+                className="back-btn" 
+                onClick={() => setMenuDetailPage(null)}
+                aria-label="뒤로 가기"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <h2>태그 관리</h2>
+              <button 
+                className="close-menu-btn" 
+                onClick={() => {
+                  setMenuOpen(false);
+                  setMenuDetailPage(null);
+                }}
+                aria-label="메뉴 닫기"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="side-menu-detail">
+              <ul className="tag-list">
+                {existingTags.length === 0 ? (
+                  <li className="empty-tag-message">등록된 태그가 없습니다.</li>
+                ) : (
+                  existingTags.map((tag) => (
+                    <li key={tag} className="tag-item">
+                      <div className="tag-item-left">
+                        <div 
+                          className="tag-color-box"
+                          style={{ backgroundColor: getTagColor(tag).color }}
+                        />
+                        <span className="tag-name">{tag}</span>
+                      </div>
+                      <div className="tag-item-right">
+                        <span className="tag-count">
+                          {todos.filter(todo => todo.tag === tag).length}개
+                        </span>
+                        <button
+                          className="tag-color-btn"
+                          onClick={() => openColorPicker(tag)}
+                          aria-label="색상 변경"
+                        >
+                          <span className="tag-color-btn-icon"></span>
+                        </button>
+                      </div>
+                      
+                      {/* 색상 선택 팝업 */}
+                      {colorPickerTag === tag && (
+                        <>
+                          <div 
+                            className="color-picker-overlay" 
+                            onClick={closeColorPicker}
+                          />
+                          <div className="color-picker-popup">
+                            <h4 className="color-picker-title">Colors</h4>
+                            <div className="color-picker-grid">
+                              {colorPalette.map((colorOption) => (
+                                <button
+                                  key={colorOption.value}
+                                  className={`color-option ${getTagColor(tag).value === colorOption.value ? 'selected' : ''}`}
+                                  onClick={() => changeTagColor(tag, colorOption.value)}
+                                  title={colorOption.name}
+                                >
+                                  <div 
+                                    className="color-circle"
+                                    style={{ backgroundColor: colorOption.color }}
+                                  />
+                                  <span className="color-name">{colorOption.name}</span>
+                                  {getTagColor(tag).value === colorOption.value && (
+                                    <svg className="color-check" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
             <div className="side-menu-footer">
               <p>© dea. All rights reserved.</p>
             </div>
@@ -521,14 +784,28 @@ function App() {
               {/* 태그가 있는 항목들 */}
               {taggedGroups.map(([tag, todos]) => (
                 <div key={tag} className="todo-group">
-                  <h3 className="todo-group-tag">#{tag}</h3>
+                  <h3 className="todo-group-tag">
+                    <span className="todo-group-tag-txt">
+                      <div 
+                        className="tag-color-box"
+                        style={{ backgroundColor: getTagColor(tag).color }}
+                      />
+                      <span className="tag-name">
+                      {tag}
+                      </span>
+                    </span>
+                  </h3>
                   {todos.map(todo => (
                     <TodoItem
                       key={todo.id}
                       todo={todo}
+                      tagColor={todo.tag ? getTagColor(todo.tag).color : null}
                       onToggle={toggleTodo}
                       onDelete={openDeleteConfirm}
                       onEdit={openEditPopup}
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDragEnd={handleDragEnd}
                     />
                   ))}
                 </div>
@@ -544,6 +821,9 @@ function App() {
                       onToggle={toggleTodo}
                       onDelete={openDeleteConfirm}
                       onEdit={openEditPopup}
+                      onDragStart={handleDragStart}
+                      onDragOver={handleDragOver}
+                      onDragEnd={handleDragEnd}
                     />
                   ))}
                 </div>
@@ -559,7 +839,17 @@ function App() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="feather feather-home" viewBox="0 0 24 24">
             <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
           </svg>
-          <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="css-i6dzq1" viewBox="0 0 24 24">
+          <svg 
+            fill="none" 
+            stroke="currentColor" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth="2" 
+            className="css-i6dzq1" 
+            viewBox="0 0 24 24"
+            onClick={openSearchPopup}
+            style={{ cursor: 'pointer' }}
+          >
             <circle cx="11" cy="11" r="8"></circle>
             <path d="M21 21l-4.35-4.35"></path>
           </svg>
@@ -675,6 +965,106 @@ function App() {
                 </button>
               </div>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* 검색 팝업 */}
+      {searchPopupOpen && (
+        <>
+          <div 
+            className="popup-overlay"
+            onClick={closeSearchPopup}
+          />
+          <div className="bottom-sheet">
+            <div className="bottom-sheet-handle"></div>
+            <div className="bottom-sheet-header">
+              <h2>Search</h2>
+              <button 
+                className="popup-close-btn"
+                onClick={closeSearchPopup}
+                aria-label="닫기"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSearch} className="bottom-sheet-content">
+              <div className="form-group">
+                <label htmlFor="search-tag" className="form-label">Tag</label>
+                <Select
+                  value={selectedSearchTag}
+                  onChange={setSelectedSearchTag}
+                  options={[
+                    { value: 'all', label: '전체' },
+                    ...existingTags.map(tag => ({ value: tag, label: `#${tag}` })),
+                    { value: 'untagged', label: '태그 없음' }
+                  ]}
+                  placeholder="태그를 선택하세요"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="search-keyword" className="form-label">Keyword</label>
+                <input
+                  id="search-keyword"
+                  type="text"
+                  className="text-input"
+                  placeholder="검색어를 입력하세요"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                />
+              </div>
+
+              {/* 검색 결과 */}
+              {hasSearched && searchResults.length > 0 && (
+                <div className="search-results">
+                  <h3 className="search-results-title">검색 결과 ({searchResults.length}개)</h3>
+                  <div className="search-results-list">
+                    {searchResults.map(todo => (
+                      <div key={todo.id} className={`search-result-item ${todo.completed ? 'completed' : ''}`}>
+                        <div className="search-result-content">
+                          <span className="search-result-text">{todo.text}</span>
+                          {todo.tag && (
+                            <span className="search-result-tag">
+                              <div 
+                                className="tag-color-box small"
+                                style={{ backgroundColor: getTagColor(todo.tag).color }}
+                              />
+                              {todo.tag}
+                            </span>
+                          )}
+                        </div>
+                        {todo.dueDate && (
+                          <span className="search-result-date">{formatDate(todo.dueDate)}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {hasSearched && searchResults.length === 0 && (
+                <div className="search-no-results">
+                  검색 결과가 없습니다.
+                </div>
+              )}
+
+              <div className="popup-actions">
+                <button 
+                  type="button"
+                  className="popup-cancel-btn"
+                  onClick={closeSearchPopup}
+                >
+                  취소
+                </button>
+                <button 
+                  type="submit"
+                  className="popup-add-btn"
+                >
+                  검색
+                </button>
+              </div>
+            </form>
           </div>
         </>
       )}
