@@ -595,7 +595,7 @@ button {
   font-family: "Fjalla One", sans-serif;
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: 1.5px;
 }
 
 .app-logo {
@@ -1149,8 +1149,6 @@ button {
   }
 
   .react-datepicker__week {
-
-    /* 주의 첫 번째 날 = 일요일 */
     .react-datepicker__day:first-child {
       color: #ec0000 !important;
 

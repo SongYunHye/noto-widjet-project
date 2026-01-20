@@ -683,7 +683,7 @@ function App() {
       {/* 상단 헤더 바 */}
       <header className="top-header">
         <h1 className="app-title">
-          Noto
+          Todoit
           <img src={logo} alt="Todo Logo" className="app-logo" />
         </h1>
         {/* <button 
