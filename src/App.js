@@ -65,39 +65,70 @@ function App() {
   // 앱 높이 동적 설정 (모바일 브라우저 주소창 문제 해결)
   useEffect(() => {
     const setAppHeight = () => {
-      const app = document.querySelector('.App');
-      const root = document.getElementById('root');
-      if (app) {
-        // 100dvh를 사용하거나 window.innerHeight 사용
-        const height = window.innerHeight;
-        app.style.height = `${height}px`;
-      }
-      if (root) {
-        root.style.height = `${window.innerHeight}px`;
-      }
+      // requestAnimationFrame을 사용하여 브라우저 렌더링 후 실행
+      requestAnimationFrame(() => {
+        const app = document.querySelector('.App');
+        const root = document.getElementById('root');
+        const html = document.documentElement;
+        const body = document.body;
+        
+        // 모바일 크롬에서 가장 정확한 높이 계산
+        let height;
+        if (window.visualViewport && window.visualViewport.height > 0) {
+          // visualViewport가 있고 유효한 값이면 사용 (모바일 크롬에서 가장 정확)
+          height = window.visualViewport.height;
+        } else {
+          // clientHeight는 스크롤바를 제외한 실제 뷰포트 높이
+          height = html.clientHeight || window.innerHeight;
+        }
+        
+        // 모든 요소에 동일한 높이 적용
+        if (app) {
+          app.style.height = `${height}px`;
+          app.style.maxHeight = `${height}px`;
+        }
+        if (root) {
+          root.style.height = `${height}px`;
+          root.style.maxHeight = `${height}px`;
+        }
+        if (html) {
+          html.style.height = `${height}px`;
+          html.style.maxHeight = `${height}px`;
+        }
+        if (body) {
+          body.style.height = `${height}px`;
+          body.style.maxHeight = `${height}px`;
+        }
+      });
     };
 
-    // 초기 설정
-    setAppHeight();
+    // 초기 설정 (약간의 지연을 두어 DOM이 완전히 로드된 후 실행)
+    const initialTimeout = setTimeout(() => {
+      setAppHeight();
+    }, 0);
 
     // 이벤트 리스너
-    window.addEventListener('resize', setAppHeight);
+    window.addEventListener('resize', setAppHeight, { passive: true });
     window.addEventListener('orientationchange', setAppHeight);
     
-    // 모바일에서 스크롤 시에도 높이 재계산 (주소창 숨김/표시)
-    let resizeTimer;
-    const handleScroll = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        setAppHeight();
-      }, 100);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // visualViewport가 있으면 사용 (모바일 크롬에서 주소창 변화 감지)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setAppHeight, { passive: true });
+      window.visualViewport.addEventListener('scroll', setAppHeight, { passive: true });
+    }
+    
+    // 추가 안전장치: load 이벤트 후에도 설정
+    window.addEventListener('load', setAppHeight, { passive: true });
     
     return () => {
+      clearTimeout(initialTimeout);
       window.removeEventListener('resize', setAppHeight);
       window.removeEventListener('orientationchange', setAppHeight);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('load', setAppHeight);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', setAppHeight);
+        window.visualViewport.removeEventListener('scroll', setAppHeight);
+      }
     };
   }, []);
 
