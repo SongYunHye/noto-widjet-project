@@ -133,22 +133,22 @@ function App() {
   // }, []);
 
   // 로컬 스토리지에서 불러오기
-  useEffect(() => {
-    const savedTodos = localStorage.getItem('todos');
-    if (savedTodos) {
-      try {
-        const parsed = JSON.parse(savedTodos);
-        // order 필드가 없는 경우 추가
-        const todosWithOrder = parsed.map((todo, index) => ({
-          ...todo,
-          order: todo.order !== undefined ? todo.order : index
-        }));
-        setTodos(todosWithOrder);
-      } catch (e) {
-        console.error('Failed to parse todos:', e);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedTodos = localStorage.getItem('todos');
+  //   if (savedTodos) {
+  //     try {
+  //       const parsed = JSON.parse(savedTodos);
+  //       // order 필드가 없는 경우 추가
+  //       const todosWithOrder = parsed.map((todo, index) => ({
+  //         ...todo,
+  //         order: todo.order !== undefined ? todo.order : index
+  //       }));
+  //       setTodos(todosWithOrder);
+  //     } catch (e) {
+  //       console.error('Failed to parse todos:', e);
+  //     }
+  //   }
+  // }, []);
 
   // 로컬 스토리지에 저장
   useEffect(() => {
