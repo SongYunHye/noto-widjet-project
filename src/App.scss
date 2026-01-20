@@ -37,6 +37,7 @@ button {
 #root {
   width: 100%;
   height: 100vh;
+  height: 100dvh; // 모바일에서 더 정확한 높이
   overflow: hidden;
 }
 
@@ -45,6 +46,7 @@ button {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh; // 모바일에서 더 정확한 높이
 
   /* 기본값, JavaScript에서 window.innerHeight로 덮어씀 */
   margin: 0 auto;

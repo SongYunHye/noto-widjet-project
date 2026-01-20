@@ -1,6 +1,10 @@
 html,
 body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  height: 100dvh; /* 모바일에서 더 정확한 높이 */
+  overflow: hidden; /* 스크롤 방지 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

@@ -66,8 +66,14 @@ function App() {
   useEffect(() => {
     const setAppHeight = () => {
       const app = document.querySelector('.App');
+      const root = document.getElementById('root');
       if (app) {
-        app.style.height = `${window.innerHeight}px`;
+        // 100dvh를 사용하거나 window.innerHeight 사용
+        const height = window.innerHeight;
+        app.style.height = `${height}px`;
+      }
+      if (root) {
+        root.style.height = `${window.innerHeight}px`;
       }
     };
 
