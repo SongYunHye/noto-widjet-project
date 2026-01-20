@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
+import 'react-datepicker/dist/react-datepicker.css';
 import logo from './assets/img/ico_logo.png';
 import TodoItem from './components/TodoItem';
 import TagInput from './components/TagInput';
 import Select from './components/Select';
+import DatePicker from 'react-datepicker';
 
 function App() {
   // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
@@ -23,7 +25,7 @@ function App() {
 
   const [todos, setTodos] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [dueDate, setDueDate] = useState(getTodayDate());
+  const [dueDate, setDueDate] = useState(new Date());
   const [tag, setTag] = useState(''); // 태그
   const [filter, setFilter] = useState('all'); // all, active, completed
   const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Daily 탭에서 선택된 날짜
@@ -112,7 +114,7 @@ function App() {
       id: Date.now(),
       text: inputValue.trim(),
       completed: false,
-      dueDate: dueDate || null,
+      dueDate: dueDate ? dueDate.toISOString().split('T')[0] : null,
       tag: tag.trim() || null,
       order: todos.length, // 순서 추가
       createdAt: new Date().toISOString()
@@ -151,7 +153,7 @@ function App() {
   const openEditPopup = (todo) => {
     setEditingTodo(todo);
     setInputValue(todo.text);
-    setDueDate(todo.dueDate || getTodayDate());
+    setDueDate(todo.dueDate ? new Date(todo.dueDate) : new Date());
     setTag(todo.tag || '');
   };
 
@@ -161,7 +163,7 @@ function App() {
     if (!editingTodo || inputValue.trim() === '') return;
 
     setTodos(todos.map(todo =>
-      todo.id === editingTodo.id ? { ...todo, text: inputValue.trim(), dueDate: dueDate, tag: tag.trim() || null } : todo
+      todo.id === editingTodo.id ? { ...todo, text: inputValue.trim(), dueDate: dueDate ? dueDate.toISOString().split('T')[0] : null, tag: tag.trim() || null } : todo
     ));
     closePopup(); // 팝업 닫기 (애니메이션 포함)
   };
@@ -173,7 +175,7 @@ function App() {
       setAddPopupOpen(false);
       setEditingTodo(null);
       setInputValue('');
-      setDueDate(getTodayDate());
+      setDueDate(new Date());
       setTag('');
       setIsClosingPopup(false);
     }, 300); // 애니메이션 시간과 동일
@@ -894,12 +896,14 @@ function App() {
             <form onSubmit={editingTodo ? saveEditTodo : addTodo} className="bottom-sheet-content">
               <div className="form-group">
                 <label htmlFor="due-date" className="form-label">Date</label>
-                <input
-                  id="due-date"
-                  type="date"
+                <DatePicker
+                  selected={dueDate}
+                  onChange={(date) => setDueDate(date)}
+                  dateFormat="yyyy-MM-dd"
                   className="date-input"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  id="due-date"
+                  calendarClassName="custom-calendar"
+                  popperClassName="custom-popper"
                 />
               </div>
               <div className="form-group">
