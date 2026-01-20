@@ -101,6 +101,10 @@ button {
       border-radius: 0;
     }
 
+    .cont-nav {
+      padding: 8px 12px;
+    }
+
     .menu-overlay,
     .side-menu {
       position: fixed;
@@ -129,14 +133,16 @@ button {
   top: 0;
   right: -100%;
   bottom: 59px;
-  z-index: 200;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   width: 80%;
   background: $bg-white;
+  border-radius: $border-radius-xl 0 0 $border-radius-xl;
   overflow: hidden;
   transition: right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   box-shadow: -4px 0 20px rgb(0 0 0 / 15%);
+  text-align: center;
 
   &.open {
     right: 0;
@@ -504,9 +510,9 @@ button {
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 9999;
   padding: 24px 20px 48px;
   background: $bg-white;
-  text-align: center;
 
   p {
     margin: 0;
