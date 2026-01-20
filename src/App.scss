@@ -53,28 +53,20 @@ button {
   overflow: hidden;
   min-width: 360px;
 
-  // isolation: isolate;
 
   /* 데스크톱 */
   &.desktop {
     overflow: hidden;
-    max-width: 480px;
 
     .nav {
       right: auto;
       left: auto;
       width: 100%;
-
-      // border-radius: $border-radius-xl;
-      max-width: 480px;
     }
 
     .bottom-sheet {
-      left: 50%;
       width: 100%;
       animation: slide-up-desktop 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-      max-width: 480px;
-      transform: translateX(-50%);
 
       &.closing {
         animation: slide-down-desktop 0.3s cubic-bezier(0.32, 0.72, 0, 1);
@@ -94,6 +86,7 @@ button {
     }
   }
 
+  송윤혜,
   /* 모바일 - 전체 화면 */
   &.mobile {
     height: 100vh;
@@ -101,6 +94,7 @@ button {
     box-shadow: none;
 
     .top-header {
+      padding: 12px 16px;
       border-radius: 0;
     }
 
@@ -729,7 +723,7 @@ button {
     padding: 12px 0;
     color: $text-light;
     font-family: Roboto, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: $transition-base;
@@ -772,7 +766,7 @@ button {
 
 /* 하단 네비게이션 */
 .nav {
-  position: absolute;
+  position: sticky;
   right: 0;
   bottom: 0;
   left: 0;
@@ -792,7 +786,7 @@ button {
   justify-content: space-around;
   width: 100%;
   padding: 0 20px;
-  max-width: 480px;
+  max-width: 760px;
 
   svg {
     width: 24px;
@@ -901,6 +895,7 @@ button {
   bottom: 0;
   left: 0;
   z-index: 101;
+  width: 100%;
   background: $bg-white;
   border-radius: $border-radius-lg $border-radius-lg 0 0;
   overflow: hidden;
@@ -921,7 +916,7 @@ button {
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(50%);
+    transform: translateY(20%);
   }
 
   to {
@@ -938,31 +933,31 @@ button {
 
   to {
     opacity: 0;
-    transform: translateY(50%);
+    transform: translateY(20%);
   }
 }
 
 @keyframes slide-up-desktop {
   from {
     opacity: 0;
-    transform: translate(-50%, 50%);
+    transform: translateY(20%);
   }
 
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
   }
 }
 
 @keyframes slide-down-desktop {
   from {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
   }
 
   to {
     opacity: 0;
-    transform: translate(-50%, 50%);
+    transform: translateY(20%);
   }
 }
 
@@ -1096,6 +1091,10 @@ button {
   width: 100%;
 }
 
+.react-datepicker__triangle {
+  display: none;
+}
+
 .custom-popper {
   z-index: 250 !important;
 }
@@ -1107,69 +1106,244 @@ button {
   box-shadow: 0 8px 24px rgb(0 0 0 / 15%) !important;
 
   .react-datepicker__header {
+    position: relative !important;
     background-color: $bg-white !important;
     border-bottom: 1px solid $border-light !important;
-    padding-top: 12px !important;
+    padding-top: 16px !important;
   }
 
   .react-datepicker__current-month {
     color: $text-dark !important;
     font-size: 14px !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     margin-bottom: 8px !important;
+    line-height: 24px !important;
+  }
+
+  .react-datepicker__day-name,
+  .react-datepicker__day {
+    display: inline-block !important;
+    width: 2rem !important;
+    margin: 0.166rem !important;
+    line-height: 2rem !important;
+    text-align: center !important;
   }
 
   .react-datepicker__day-name {
     color: $text-medium !important;
     font-size: 12px !important;
     font-weight: 500 !important;
+
+    /* 일요일 빨간색 */
+    &:first-child {
+      color: #ec0000 !important;
+    }
+
+    /* 토요일 파란색 */
+    &:last-child {
+      color: #05f !important;
+    }
+  }
+
+  .react-datepicker__week {
+
+    /* 주의 첫 번째 날 = 일요일 */
+    .react-datepicker__day:first-child {
+      color: #ec0000 !important;
+
+      &:hover {
+        color: #ec0000 !important;
+      }
+
+      /* 선택된 일요일 */
+      &.react-datepicker__day--selected {
+        color: #ec0000 !important;
+
+        &:hover {
+          color: #ec0000 !important;
+        }
+      }
+
+      /* 키보드로 선택한 일요일 */
+      &.react-datepicker__day--keyboard-selected {
+        color: #ec0000 !important;
+
+        &:hover {
+          color: #ec0000 !important;
+        }
+      }
+
+      /* 오늘이 일요일 */
+      &.react-datepicker__day--today {
+        color: #ec0000 !important;
+        border-color: #ec0000 !important;
+
+        &:hover {
+          color: #ec0000 !important;
+          border-color: #ec0000 !important;
+        }
+      }
+
+      /* 다른 달의 일요일 */
+      &.react-datepicker__day--outside-month {
+        color: rgb(236 0 0 / 40%) !important;
+      }
+    }
+
+    /* 주의 마지막 날 = 토요일 */
+    .react-datepicker__day:last-child {
+      color: #05f !important;
+
+      &:hover {
+        color: #05f !important;
+      }
+
+      /* 선택된 토요일 */
+      &.react-datepicker__day--selected {
+        color: #05f !important;
+
+        &:hover {
+          color: #05f !important;
+        }
+      }
+
+      /* 키보드로 선택한 토요일 */
+      &.react-datepicker__day--keyboard-selected {
+        color: #05f !important;
+
+        &:hover {
+          color: #05f !important;
+        }
+      }
+
+      /* 오늘이 토요일 */
+      &.react-datepicker__day--today {
+        color: #05f !important;
+        border-color: #05f !important;
+
+        &:hover {
+          color: #05f !important;
+          border-color: #05f !important;
+        }
+      }
+
+      /* 다른 달의 토요일 */
+      &.react-datepicker__day--outside-month {
+        color: rgb(0 85 255 / 40%) !important;
+      }
+    }
   }
 
   .react-datepicker__day {
-    border-radius: 50% !important;
+    border-radius: 4px !important;
     color: $text-dark !important;
     font-size: 13px !important;
+    font-weight: normal !important;
     transition: $transition-base !important;
 
     &:hover {
-      background-color: rgb(6 48 100 / 8%) !important;
-      border-radius: 50% !important;
+      background-color: #f8f8f8 !important;
+    }
+
+    /* 일요일 빨간색 (클래스가 있는 경우) */
+    &--sunday {
+      color: #ec0000 !important;
+
+      &:hover {
+        color: #ec0000 !important;
+      }
+    }
+
+    /* 토요일 파란색 (클래스가 있는 경우) */
+    &--saturday {
+      color: #05f !important;
+
+      &:hover {
+        color: #05f !important;
+      }
     }
 
     &--selected {
       background-color: rgb(43 174 102 / 10%) !important;
-      color: #063064 !important;
       font-weight: 600 !important;
 
       &:hover {
-        background-color: $primary-color !important;
+        background-color: #f8f8f8 !important;
       }
     }
 
     &--keyboard-selected {
       background-color: rgb(6 48 100 / 8%) !important;
       color: $text-dark !important;
+
+      /* 키보드 선택 시 일요일도 빨간색 유지 */
+      &.react-datepicker__day--sunday {
+        color: #ec0000 !important;
+      }
+
+      /* 키보드 선택 시 토요일도 파란색 유지 */
+      &.react-datepicker__day--saturday {
+        color: #05f !important;
+      }
     }
 
     &--today {
-      border: 1px solid $secondary-color !important;
-      color: $secondary-color !important;
-      font-weight: 600 !important;
+      border: 1px solid #e6e7e8 !important;
+      border-radius: 4px !important;
 
       &:hover {
         background-color: rgb(43 174 102 / 10%) !important;
+      }
+
+      /* 오늘이 일요일이면 빨간색 유지 */
+      &.react-datepicker__day--sunday {
+        color: #ec0000 !important;
+        border-color: #ec0000 !important;
+
+        &:hover {
+          color: #ec0000 !important;
+          border-color: #ec0000 !important;
+        }
+      }
+
+      /* 오늘이 토요일이면 파란색 유지 */
+      &.react-datepicker__day--saturday {
+        color: #05f !important;
+        border-color: #05f !important;
+
+        &:hover {
+          color: #05f !important;
+          border-color: #05f !important;
+        }
       }
     }
 
     &--outside-month {
       color: $text-light !important;
+      opacity: 0.5;
+
+      /* 다른 달의 일요일도 빨간색 (연하게) */
+      &.react-datepicker__day--sunday {
+        color: rgb(198 48 63 / 40%) !important;
+      }
+
+      /* 다른 달의 토요일도 파란색 (연하게) */
+      &.react-datepicker__day--saturday {
+        color: rgb(0 85 255 / 40%) !important;
+      }
     }
   }
 
   .react-datepicker__navigation {
-    top: 12px !important;
+    top: 19px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
 
     &--previous {
+      left: 10px !important;
       border-right-color: $text-medium !important;
 
       &:hover {
@@ -1178,11 +1352,29 @@ button {
     }
 
     &--next {
+      right: 10px !important;
       border-left-color: $text-medium !important;
 
       &:hover {
         border-left-color: $primary-color !important;
       }
+    }
+  }
+
+  .react-datepicker__navigation-icon {
+    width: 8px !important;
+    height: 8px !important;
+
+    &::before {
+      border-color: #2c3e50 !important;
+      border-width: 2px 2px 0 0 !important;
+      top: 0 !important;
+      width: 8px !important;
+      height: 8px !important;
+    }
+
+    &:hover::before {
+      border-color: #2c3e50 !important;
     }
   }
 }
@@ -1553,7 +1745,7 @@ button {
 /* 투두 리스트 */
 .cont-todolist {
   height: -webkit-fill-available;
-  padding: 39px 12px 60px;
+  padding: 32px 12px 60px;
   background-color: #fff;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1638,6 +1830,18 @@ button {
   }
 }
 
+.todo-items-grid {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+
+  /* PC에서 2열 그리드 */
+  @media (width >=769px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 8px;
+  }
+}
+
 .todo-group-tag {
   position: relative;
   display: flex;
@@ -1666,6 +1870,7 @@ button {
 .tag-color-box {
   position: absolute;
   bottom: 0;
+  left: 3px;
   z-index: 8;
   width: 100%;
   height: 8px;
@@ -1725,6 +1930,13 @@ button {
 
     &:not(.completed) .drag-handle {
       opacity: 1;
+    }
+  }
+
+  /* 텍스트가 긴 경우 전체 너비 사용 */
+  &.todo-item-long {
+    @media (width >=769px) {
+      grid-column: 1 / -1;
     }
   }
 }
@@ -1978,7 +2190,7 @@ button {
 /* 위젯 모드 (작은 화면) */
 @media (width <=360px) {
   .top-header {
-    padding: 14px 16px;
+    padding: 12px 16px;
   }
 
   .app-title {

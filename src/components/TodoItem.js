@@ -2,9 +2,12 @@ import React from 'react';
 import Checkbox from './Checkbox';
 
 function TodoItem({ todo, onToggle, onDelete, onEdit, onDragStart, onDragOver, onDragEnd }) {
+  // 텍스트 길이가 30자 이상이면 전체 너비 사용
+  const isLongText = todo.text.length > 30;
+  
   return (
     <div 
-      className={`todo-item ${todo.completed ? 'completed' : ''} ${!todo.completed ? 'draggable' : ''}`}
+      className={`todo-item ${todo.completed ? 'completed' : ''} ${!todo.completed ? 'draggable' : ''} ${isLongText ? 'todo-item-long' : ''}`}
       draggable={!todo.completed}
       onDragStart={() => !todo.completed && onDragStart && onDragStart(todo)}
       onDragOver={(e) => !todo.completed && onDragOver && onDragOver(e, todo)}

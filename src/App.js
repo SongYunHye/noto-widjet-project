@@ -151,6 +151,15 @@ function App() {
 
   // 수정 팝업 열기
   const openEditPopup = (todo) => {
+    // 검색 팝업이 열려있으면 먼저 닫기
+    if (searchPopupOpen) {
+      setSearchPopupOpen(false);
+      setSearchKeyword('');
+      setSelectedSearchTag('all');
+      setSearchResults([]);
+      setHasSearched(false);
+    }
+    
     setEditingTodo(todo);
     setInputValue(todo.text);
     setDueDate(todo.dueDate ? new Date(todo.dueDate) : new Date());
@@ -213,8 +222,31 @@ function App() {
     setDraggedTodo(null);
   };
 
+  // 할 일 추가 팝업 열기
+  const openAddPopup = () => {
+    // 검색 팝업이 열려있으면 먼저 닫기
+    if (searchPopupOpen) {
+      setSearchPopupOpen(false);
+      setSearchKeyword('');
+      setSelectedSearchTag('all');
+      setSearchResults([]);
+      setHasSearched(false);
+    }
+    
+    setAddPopupOpen(true);
+  };
+
   // 검색 팝업 열기
   const openSearchPopup = () => {
+    // 기존 팝업이 열려있으면 먼저 닫기
+    if (addPopupOpen || editingTodo) {
+      setAddPopupOpen(false);
+      setEditingTodo(null);
+      setInputValue('');
+      setDueDate(new Date());
+      setTag('');
+    }
+    
     setSearchPopupOpen(true);
     setSearchKeyword('');
     setSelectedSearchTag('all');
@@ -478,7 +510,7 @@ function App() {
               </ul>
             </nav>
             <div className="side-menu-footer">
-              <p>© dea. All rights reserved.</p>
+              <p>© mingzzi. All rights reserved.</p>
             </div>
           </>
         )}
@@ -574,7 +606,7 @@ function App() {
               </ul>
             </div>
             <div className="side-menu-footer">
-              <p>© dea. All rights reserved.</p>
+              <p>© mingzzi. All rights reserved.</p>
             </div>
           </>
         )}
@@ -642,7 +674,7 @@ function App() {
               </ul>
             </div>
             <div className="side-menu-footer">
-              <p>© dea. All rights reserved.</p>
+              <p>© mingzzi. All rights reserved.</p>
             </div>
           </>
         )}
@@ -656,7 +688,7 @@ function App() {
         </h1>
         {/* <button 
           className="write-btn" 
-          onClick={() => setAddPopupOpen(true)}
+          onClick={openAddPopup}
           aria-label="할 일 작성"
         >
           <img src={writeIcon} alt="Write" className="write-icon" />
@@ -797,37 +829,41 @@ function App() {
                       </span>
                     </span>
                   </h3>
-                  {todos.map(todo => (
-                    <TodoItem
-                      key={todo.id}
-                      todo={todo}
-                      tagColor={todo.tag ? getTagColor(todo.tag).color : null}
-                      onToggle={toggleTodo}
-                      onDelete={openDeleteConfirm}
-                      onEdit={openEditPopup}
-                      onDragStart={handleDragStart}
-                      onDragOver={handleDragOver}
-                      onDragEnd={handleDragEnd}
-                    />
-                  ))}
+                  <div className="todo-items-grid">
+                    {todos.map(todo => (
+                      <TodoItem
+                        key={todo.id}
+                        todo={todo}
+                        tagColor={todo.tag ? getTagColor(todo.tag).color : null}
+                        onToggle={toggleTodo}
+                        onDelete={openDeleteConfirm}
+                        onEdit={openEditPopup}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragEnd={handleDragEnd}
+                      />
+                    ))}
+                  </div>
                 </div>
               ))}
               
               {/* 태그가 없는 항목들 */}
               {untaggedTodos.length > 0 && (
                 <div className="todo-group">
-                  {untaggedTodos.map(todo => (
-                    <TodoItem
-                      key={todo.id}
-                      todo={todo}
-                      onToggle={toggleTodo}
-                      onDelete={openDeleteConfirm}
-                      onEdit={openEditPopup}
-                      onDragStart={handleDragStart}
-                      onDragOver={handleDragOver}
-                      onDragEnd={handleDragEnd}
-                    />
-                  ))}
+                  <div className="todo-items-grid">
+                    {untaggedTodos.map(todo => (
+                      <TodoItem
+                        key={todo.id}
+                        todo={todo}
+                        onToggle={toggleTodo}
+                        onDelete={openDeleteConfirm}
+                        onEdit={openEditPopup}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragEnd={handleDragEnd}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </>
@@ -859,7 +895,7 @@ function App() {
             className="btn-add nav-icon-bold" 
             xmlns="http://www.w3.org/2000/svg" 
             viewBox="0 0 1000 1000"
-            onClick={() => setAddPopupOpen(true)}
+            onClick={openAddPopup}
           >
             <path fill="currentColor" stroke="currentColor" strokeWidth="15" strokeLinejoin="round" d="M934 822H794v140c0 15.5-12.5 28-28 28s-28-12.5-28-28V822H598c-15.5 0-28-12.5-28-28s12.5-28 28-28h140V626c0-15.5 12.5-28 28-28s28 12.5 28 28v140h140c15.5 0 28 12.5 28 28s-12.5 28-28 28zM738 122c0-30.9-25.1-56-56-56H150c-30.9 0-56 25.1-56 56v756c0 30.9 25.1 56 56 56h364v56H122c-46.4 0-84-37.6-84-84V94c0-46.4 37.6-84 84-84h588c46.4 0 84 37.6 84 84v364h-56V122z"></path>
           </svg>
@@ -904,6 +940,7 @@ function App() {
                   id="due-date"
                   calendarClassName="custom-calendar"
                   popperClassName="custom-popper"
+                  popperPlacement="bottom-start"
                 />
               </div>
               <div className="form-group">
@@ -923,7 +960,6 @@ function App() {
                   placeholder="what is your plan?"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  autoFocus
                   rows={4}
                 />
               </div>
