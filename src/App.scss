@@ -11,7 +11,8 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  height: calc(100vh + env(safe-area-inset-top, 0) + env(safe-area-inset-bottom, 0));
+  height: 100dvh;
+  /* 동적 뷰포트 높이 */
   margin: 0;
   padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
   font-family:
@@ -51,7 +52,8 @@ button {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  height: calc(100vh + env(safe-area-inset-top, 0) + env(safe-area-inset-bottom, 0));
+  height: 100dvh;
+  /* 동적 뷰포트 높이 - 모바일 브라우저 UI 고려 */
   margin: 0 auto;
   overflow: hidden;
   min-width: 360px;
@@ -91,8 +93,8 @@ button {
 
   /* 모바일 - 전체 화면 */
   &.mobile {
-    height: 100vh;
-    height: calc(100vh + env(safe-area-inset-top, 0) + env(safe-area-inset-bottom, 0));
+    height: 100dvh;
+    /* 동적 뷰포트 높이 */
     border-radius: 25px;
     box-shadow: none;
 
@@ -111,8 +113,7 @@ button {
     }
 
     .side-menu {
-      height: 100vh;
-      height: calc(100vh + env(safe-area-inset-top, 0) + env(safe-area-inset-bottom, 0));
+      height: 100dvh;
     }
   }
 }
@@ -776,15 +777,14 @@ button {
 
 /* 하단 네비게이션 */
 .nav {
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom: 0;
-  bottom: env(safe-area-inset-bottom, 0);
   left: 0;
   z-index: 999;
   display: flex;
   justify-content: center;
-  padding: 17px 0;
+  padding: 17px 0 calc(17px + env(safe-area-inset-bottom, 0));
   background: rgb(255 255 255 / 98%);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgb(0 0 0 / 8%);
