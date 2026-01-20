@@ -62,6 +62,39 @@ function App() {
     return () => window.removeEventListener('resize', checkDevice);
   }, []);
 
+  // 앱 높이 동적 설정 (모바일 브라우저 주소창 문제 해결)
+  useEffect(() => {
+    const setAppHeight = () => {
+      const app = document.querySelector('.App');
+      if (app) {
+        app.style.height = `${window.innerHeight}px`;
+      }
+    };
+
+    // 초기 설정
+    setAppHeight();
+
+    // 이벤트 리스너
+    window.addEventListener('resize', setAppHeight);
+    window.addEventListener('orientationchange', setAppHeight);
+    
+    // 모바일에서 스크롤 시에도 높이 재계산 (주소창 숨김/표시)
+    let resizeTimer;
+    const handleScroll = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        setAppHeight();
+      }, 100);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('resize', setAppHeight);
+      window.removeEventListener('orientationchange', setAppHeight);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   // 로컬 스토리지에서 불러오기
   useEffect(() => {
     const savedTodos = localStorage.getItem('todos');
