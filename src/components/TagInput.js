@@ -137,7 +137,10 @@ function TagInput({ value, onChange, existingTags, placeholder = "Enter or selec
               <button
                 type="button"
                 className={`tag-suggestion-item ${focusedIndex === index ? 'focused' : ''}`}
-                onClick={() => handleSelectTag(tag)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSelectTag(tag);
+                }}
                 onMouseEnter={() => setFocusedIndex(index)}
               >
                 #{tag}

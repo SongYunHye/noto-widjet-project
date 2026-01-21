@@ -148,7 +148,10 @@ function Select({ value, onChange, options, placeholder = "Select an option", cl
               <button
                 type="button"
                 className={`select-option ${focusedIndex === index ? 'focused' : ''} ${value === option.value ? 'selected' : ''}`}
-                onClick={() => handleSelectOption(option.value)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSelectOption(option.value);
+                }}
                 onMouseEnter={() => setFocusedIndex(index)}
               >
                 {option.label}

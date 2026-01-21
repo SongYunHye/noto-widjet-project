@@ -1,0 +1,350 @@
+@import './variables';
+
+/* 기본 리셋 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  font-family:
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+#root {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* 체크박스 컴포넌트 */
+.item_checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  .inp_comm {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    -webkit-clip-path: inset(50%);
+    clip-path: inset(50%);
+
+    &:checked+.lab_comm {
+      .ico_check {
+        &::before {
+          opacity: 1;
+        }
+
+        &::after {
+          opacity: 1;
+        }
+      }
+
+      .txt_checkbox {
+        color: $text-gray;
+        text-decoration: line-through;
+      }
+    }
+
+    &:disabled+.lab_comm {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .lab_comm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .ico_check {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 1px solid #063064;
+    border-radius: 4px;
+    transition: all .3s ease;
+    flex-shrink: 0;
+
+    &::before,
+    &::after {
+      position: absolute;
+      left: 7px;
+      background: #fff;
+      opacity: 0;
+      transition: all .3s ease;
+      content: "";
+    }
+
+    &::before {
+      position: absolute;
+      top: -2px;
+      left: 7px;
+      width: 10px;
+      height: 8px;
+      background: #fff;
+      opacity: 0;
+      transition: all .3s ease;
+      content: "";
+    }
+
+    &::after {
+      top: -1px;
+      width: 4px;
+      height: 10px;
+      border: solid #063064;
+      border-width: 0 1.5px 1.5px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  .txt_checkbox {
+    color: $text-dark;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+/* Select 컴포넌트 */
+.select-wrapper {
+  position: relative;
+}
+
+.select-display {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: $bg-white;
+  border: 2px solid $border-light;
+  border-radius: $border-radius-sm;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: $transition-base;
+  outline: none;
+
+  &:hover {
+    border-color: rgb(6 48 100 / 20%);
+  }
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgb(6 48 100 / 10%);
+  }
+
+  .select-value {
+    flex: 1;
+
+    &.placeholder {
+      color: $text-light;
+    }
+  }
+
+  .select-arrow {
+    margin-left: 8px;
+    color: $text-medium;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  background: $bg-white;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  list-style: none;
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  .select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: $text-dark;
+    font-family: "Noto Sans KR", Roboto, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: $transition-base;
+    text-align: left;
+
+    &:hover,
+    &.focused {
+      background: rgb(6 48 100 / 5%);
+    }
+
+    &.selected {
+      background: rgb(6 48 100 / 10%);
+      color: $primary-color;
+      font-weight: 600;
+    }
+
+    svg {
+      margin-left: 8px;
+      color: $primary-color;
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* TagInput 컴포넌트 */
+.tag-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tag-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid $border-light;
+  border-radius: $border-radius-sm;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 15px;
+  transition: $transition-base;
+  outline: none;
+
+  &::placeholder {
+    color: $text-light;
+  }
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgb(6 48 100 / 10%);
+  }
+}
+
+.tag-suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: $bg-white;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-sm;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  list-style: none;
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  .tag-suggestion-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    color: $text-dark;
+    font-family: "Noto Sans KR", Roboto, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: $transition-base;
+    text-align: left;
+
+    &:hover,
+    &.focused {
+      background: rgb(6 48 100 / 5%);
+    }
+  }
+}
+
+/* 공통 팝업 스타일 */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 30%);
+  animation: fade-in 0.3s ease;
+  contain: layout style paint;
+  pointer-events: auto;
+
+  &.closing {
+    animation: fade-out 0.3s ease;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

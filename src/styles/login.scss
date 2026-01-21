@@ -1,0 +1,144 @@
+@import './variables';
+
+/* 로그인 페이지 */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+}
+
+.login-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.login-logo {
+  width: 16px;
+  height: 20px;
+  object-fit: contain;
+  transform: rotate(10deg);
+  margin: 0 0 -2px 4px;
+}
+
+.login-title {
+  margin: 0 0 8px;
+  color: $text-dark;
+  font-family: "Fjalla One", sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.login-subtitle {
+  margin: 5px 0 0;
+  color: $text-medium;
+  font-size: 14px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-error {
+  padding: 12px 16px;
+  background: rgb(255 71 87 / 10%);
+  border: 1px solid rgb(255 71 87 / 30%);
+  border-radius: $border-radius-sm;
+  color: #ff4757;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-label {
+  color: $text-dark;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid $input-color;
+  border-radius: $border-radius-sm;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  transition: $transition-base;
+  outline: none;
+
+  &::placeholder {
+    color: $input-placeholder;
+  }
+
+  &:focus {
+    border-color: $input-color-hover;
+  }
+}
+
+.login-btn {
+  width: 100%;
+  padding: 16px;
+  background: $primary-color;
+  border: none;
+  border-radius: $border-radius-sm;
+  color: $bg-white;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: #052a57;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(6 48 100 / 30%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.login-test-btn {
+  width: 100%;
+  padding: 14px;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.login-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.login-toggle-btn {
+  padding: 8px;
+  background: none;
+  border: none;
+  color: $text-gray;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
