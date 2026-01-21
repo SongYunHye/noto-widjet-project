@@ -5,10 +5,8 @@ const CACHE_NAME = 'todo-widget-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/js/bundle.js',
-  '/static/js/main.chunk.js',
-  '/static/js/0.chunk.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/logo.png'
 ];
 
 // 설치 이벤트 - 캐시 등록
@@ -17,9 +15,18 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // 실패해도 계속 진행하도록 개별적으로 추가
+        return Promise.all(
+          urlsToCache.map(url => {
+            return cache.add(url).catch(err => {
+              console.log('Failed to cache:', url, err);
+            });
+          })
+        );
       })
   );
+  // 즉시 활성화
+  self.skipWaiting();
 });
 
 // Fetch 이벤트 - 캐시 우선 전략
@@ -50,4 +57,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  // 즉시 클라이언트 제어
+  return self.clients.claim();
 });
