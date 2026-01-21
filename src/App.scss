@@ -129,12 +129,37 @@ button {
   background: $bg-white;
   border-radius: $border-radius-xl 0 0 $border-radius-xl;
   overflow: hidden;
-  transition: right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   box-shadow: -4px 0 20px rgb(0 0 0 / 15%);
   text-align: center;
 
   &.open {
     right: 0;
+    animation: slide-menu-in 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  &.closing {
+    right: -100%;
+    animation: slide-menu-out 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+}
+
+@keyframes slide-menu-in {
+  from {
+    right: -50%;
+  }
+
+  to {
+    right: 0;
+  }
+}
+
+@keyframes slide-menu-out {
+  from {
+    right: 0;
+  }
+
+  to {
+    right: -100%;
   }
 }
 
@@ -997,6 +1022,13 @@ button {
   max-height: calc(80vh - 120px);
   overflow-y: auto;
   padding: 24px;
+
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+  }
 }
 
 .form-group {
@@ -1604,41 +1636,68 @@ button {
   margin-top: 24px;
 }
 
-.popup-cancel-btn {
+.popup-btn {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 14px 24px;
-  background: rgb(0 0 0 / 5%);
   border: none;
   border-radius: $border-radius-sm;
-  color: $text-medium;
   font-size: 12px;
   font-weight: 600;
+  overflow: hidden;
   cursor: pointer;
   transition: $transition-base;
+  transition: all 0.3s ease-in-out;
 
-  &:hover {
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    transition: 1s ease-in-out;
+    content: "";
+    transform: scale(0);
+  }
+}
+
+.popup-cancel-btn {
+  background: rgb(0 0 0 / 5%);
+  color: $text-medium;
+
+  &::before {
     background: rgb(0 0 0 / 10%);
+  }
+
+  &:hover,
+  &:focus {
+    background: rgb(0 0 0 / 10%);
+    color: $text-dark;
+
+    // &::before {
+    //   transform: scale(1);
+    // }
   }
 }
 
 .popup-add-btn {
-  flex: 1;
-  padding: 14px 24px;
   background: rgb(43 174 102 / 10%);
-  border: none;
-  border-radius: $border-radius-sm;
   color: $primary-color;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: $transition-base;
 
-  &:hover {
-    transform: translateY(-2px);
+  &::before {
+    background: rgb(43 174 102 / 20%);
   }
 
-  &:active {
-    transform: translateY(0);
+  &:hover,
+  &:focus {
+    background: rgb(43 174 102 / 20%);
+    color: $text-dark;
+
+    // &::before {
+    //   transform: scale(1);
+    // }
   }
 }
 
@@ -2194,17 +2253,9 @@ button {
     margin: 0;
   }
 
-  // .container {
-  //   height: calc(100vh - 78px);
-  // }
-
-  // .cont-todolist {
-  //   max-height: calc(100vh - 100px);
-  // }
-
   .nav {
     padding: 15px 0 calc(15px + env(safe-area-inset-bottom));
-    border-radius: 25px;
+    border-radius: 25px 25px 0 0;
   }
 
   .nav-first {

@@ -36,8 +36,10 @@ function App() {
   const [editingTodo, setEditingTodo] = useState(null); // 수정 중인 todo
   const [deleteConfirmId, setDeleteConfirmId] = useState(null); // 삭제 확인 중인 todo id
   const [isClosingPopup, setIsClosingPopup] = useState(false); // 팝업 닫는 애니메이션 중
+  const [isClosingFavoritePopup, setIsClosingFavoritePopup] = useState(false); // 즐겨찾기 팝업 닫는 애니메이션 중
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isClosingMenu, setIsClosingMenu] = useState(false); // 메뉴 닫는 애니메이션 중
   const [menuDetailPage, setMenuDetailPage] = useState(null); // 'background' 등
   const [backgroundType, setBackgroundType] = useState('memo'); // 'note', 'memo', 'grid'
   const [draggedTodo, setDraggedTodo] = useState(null); // 드래그 중인 todo
@@ -46,6 +48,7 @@ function App() {
   const [selectedSearchTag, setSelectedSearchTag] = useState('all'); // 검색 태그 필터
   const [searchResults, setSearchResults] = useState([]); // 검색 결과
   const [hasSearched, setHasSearched] = useState(false); // 검색 실행 여부
+  const [favoritePopupOpen, setFavoritePopupOpen] = useState(false); // 즐겨찾기 팝업
   const [tagColors, setTagColors] = useState({}); // 태그별 색상 매핑 {tagName: colorValue}
   const [colorPickerTag, setColorPickerTag] = useState(null); // 색상 선택 중인 태그
 
@@ -142,6 +145,10 @@ function App() {
       setSearchResults([]);
       setHasSearched(false);
     }
+    // 즐겨찾기 팝업이 열려있으면 먼저 닫기
+    if (favoritePopupOpen) {
+      closeFavoritePopup();
+    }
     
     setEditingTodo(todo);
     setInputValue(todo.text);
@@ -171,6 +178,44 @@ function App() {
       setTag('');
       setIsClosingPopup(false);
     }, 300); // 애니메이션 시간과 동일
+  };
+
+  // 메뉴 닫기 (애니메이션 포함)
+  const closeMenu = () => {
+    setIsClosingMenu(true);
+    setTimeout(() => {
+      setMenuOpen(false);
+      setMenuDetailPage(null);
+      setIsClosingMenu(false);
+    }, 400); // 애니메이션 시간과 동일
+  };
+
+  // 홈 버튼 클릭 (모든 팝업과 메뉴 닫기)
+  const handleHomeClick = () => {
+    // 메뉴 닫기
+    if (menuOpen) {
+      closeMenu();
+    }
+    // 팝업 닫기
+    if (addPopupOpen || editingTodo) {
+      closePopup();
+    }
+    // 검색 팝업 닫기
+    if (searchPopupOpen) {
+      closeSearchPopup();
+    }
+    // 즐겨찾기 팝업 닫기
+    if (favoritePopupOpen) {
+      closeFavoritePopup();
+    }
+    // 삭제 확인 팝업 닫기
+    if (deleteConfirmId) {
+      closeDeleteConfirm();
+    }
+    // 컬러 피커 닫기
+    if (colorPickerTag) {
+      setColorPickerTag(null);
+    }
   };
 
   // 드래그 시작
@@ -215,6 +260,10 @@ function App() {
       setSearchResults([]);
       setHasSearched(false);
     }
+    // 즐겨찾기 팝업이 열려있으면 먼저 닫기
+    if (favoritePopupOpen) {
+      closeFavoritePopup();
+    }
     
     setAddPopupOpen(true);
   };
@@ -228,6 +277,10 @@ function App() {
       setInputValue('');
       setDueDate(new Date());
       setTag('');
+    }
+    // 즐겨찾기 팝업이 열려있으면 먼저 닫기
+    if (favoritePopupOpen) {
+      closeFavoritePopup();
     }
     
     setSearchPopupOpen(true);
@@ -244,6 +297,32 @@ function App() {
     setSelectedSearchTag('all');
     setSearchResults([]);
     setHasSearched(false);
+  };
+
+  // 즐겨찾기 팝업 열기
+  const openFavoritePopup = () => {
+    // 기존 팝업이 열려있으면 먼저 닫기
+    if (addPopupOpen || editingTodo) {
+      setAddPopupOpen(false);
+      setEditingTodo(null);
+      setInputValue('');
+      setDueDate(new Date());
+      setTag('');
+    }
+    if (searchPopupOpen) {
+      closeSearchPopup();
+    }
+    
+    setFavoritePopupOpen(true);
+  };
+
+  // 즐겨찾기 팝업 닫기 (애니메이션 포함)
+  const closeFavoritePopup = () => {
+    setIsClosingFavoritePopup(true);
+    setTimeout(() => {
+      setFavoritePopupOpen(false);
+      setIsClosingFavoritePopup(false);
+    }, 300); // 애니메이션 시간과 동일
   };
 
   // 검색 실행
@@ -463,22 +542,19 @@ function App() {
       {menuOpen && (
         <div 
           className="menu-overlay" 
-          onClick={() => {
-            setMenuOpen(false);
-            setMenuDetailPage(null);
-          }}
+          onClick={closeMenu}
         />
       )}
 
       {/* 사이드 메뉴 */}
-      <aside className={`side-menu ${menuOpen ? 'open' : ''}`}>
+      <aside className={`side-menu ${menuOpen ? 'open' : ''} ${isClosingMenu ? 'closing' : ''}`}>
         {/* 메인 메뉴 */}
         {!menuDetailPage && (
           <>
             <div className="side-menu-header">
               <button 
                 className="close-menu-btn" 
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
                 aria-label="메뉴 닫기"
               >
                 ✕
@@ -486,7 +562,7 @@ function App() {
             </div>
             <nav className="side-menu-nav">
               <ul>
-                <li onClick={() => setMenuOpen(false)}>
+                <li onClick={closeMenu}>
                   <span>홈</span>
                 </li>
                 <li onClick={() => setMenuDetailPage('tags')}>
@@ -525,10 +601,7 @@ function App() {
               <h2>태그 관리</h2>
               <button 
                 className="close-menu-btn" 
-                onClick={() => {
-                  setMenuOpen(false);
-                  setMenuDetailPage(null);
-                }}
+                onClick={closeMenu}
                 aria-label="메뉴 닫기"
               >
                 ✕
@@ -621,10 +694,7 @@ function App() {
               <h2>배경 설정</h2>
               <button 
                 className="close-menu-btn" 
-                onClick={() => {
-                  setMenuOpen(false);
-                  setMenuDetailPage(null);
-                }}
+                onClick={closeMenu}
                 aria-label="메뉴 닫기"
               >
                 ✕
@@ -861,7 +931,18 @@ function App() {
       {/* 하단 네비게이션 */}
       <div className="nav">
         <div className="nav-first">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="feather feather-home" viewBox="0 0 24 24">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth="2" 
+            className="feather feather-home" 
+            viewBox="0 0 24 24"
+            onClick={handleHomeClick}
+            style={{ cursor: 'pointer' }}
+          >
             <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
           </svg>
           <svg 
@@ -886,7 +967,7 @@ function App() {
           >
             <path fill="currentColor" stroke="currentColor" strokeWidth="15" strokeLinejoin="round" d="M934 822H794v140c0 15.5-12.5 28-28 28s-28-12.5-28-28V822H598c-15.5 0-28-12.5-28-28s12.5-28 28-28h140V626c0-15.5 12.5-28 28-28s28 12.5 28 28v140h140c15.5 0 28 12.5 28 28s-12.5 28-28 28zM738 122c0-30.9-25.1-56-56-56H150c-30.9 0-56 25.1-56 56v756c0 30.9 25.1 56 56 56h364v56H122c-46.4 0-84-37.6-84-84V94c0-46.4 37.6-84 84-84h588c46.4 0 84 37.6 84 84v364h-56V122z"></path>
           </svg>
-          <button className="btn-favorite">
+          <button className="btn-favorite" onClick={openFavoritePopup}>
             <svg className="ico-default-path"  fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
               <path className="default-path" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
             </svg>
@@ -953,13 +1034,17 @@ function App() {
               <div className="popup-actions">
                 <button 
                   type="button"
-                  className="popup-cancel-btn"
+                  className="popup-btn popup-cancel-btn"
                   onClick={closePopup}
                 >
-                  취소
+                   <span className="popup-btn-text">
+                   Cancel
+                   </span>
                 </button>
-                <button type="submit" className="popup-add-btn">
-                  {editingTodo ? '수정' : '추가'}
+                <button type="submit" className="popup-btn popup-add-btn">
+                  <span className="popup-btn-text">
+                  Save
+                  </span>
                 </button>
               </div>
             </form>
@@ -1079,19 +1164,51 @@ function App() {
               <div className="popup-actions">
                 <button 
                   type="button"
-                  className="popup-cancel-btn"
+                  className="popup-btn popup-cancel-btn"
                   onClick={closeSearchPopup}
                 >
-                  취소
+                  <span className="popup-btn-text">
+                    Cancel
+                  </span>
                 </button>
                 <button 
                   type="submit"
-                  className="popup-add-btn"
+                  className="popup-btn popup-add-btn"
                 >
-                  검색
+                  <span className="popup-btn-text">
+                    Search
+                  </span>
                 </button>
               </div>
             </form>
+          </div>
+        </>
+      )}
+
+      {/* Favorite 팝업 */}
+      {favoritePopupOpen && (
+        <>
+          <div 
+            className={`popup-overlay ${isClosingFavoritePopup ? 'closing' : ''}`}
+            onClick={closeFavoritePopup}
+          />
+          <div className={`bottom-sheet ${isClosingFavoritePopup ? 'closing' : ''}`}>
+            <div className="bottom-sheet-handle"></div>
+            <div className="bottom-sheet-header">
+              <h2>Favorite</h2>
+              <button 
+                className="popup-close-btn"
+                onClick={closeFavoritePopup}
+                aria-label="닫기"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="bottom-sheet-content">
+              <div className="empty-state">
+                즐겨찾기한 항목이 없습니다.
+              </div>
+            </div>
           </div>
         </>
       )}
