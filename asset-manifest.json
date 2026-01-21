@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/noto-widjet-project/static/css/main.c5c18637.css",
-    "main.js": "/noto-widjet-project/static/js/main.52c84e35.js",
+    "main.css": "/noto-widjet-project/static/css/main.da72ff00.css",
+    "main.js": "/noto-widjet-project/static/js/main.f8c392d4.js",
     "static/media/ico_logo.png": "/noto-widjet-project/static/media/ico_logo.1caf1ccf0da4f60a4063.png",
     "index.html": "/noto-widjet-project/index.html",
-    "main.c5c18637.css.map": "/noto-widjet-project/static/css/main.c5c18637.css.map",
-    "main.52c84e35.js.map": "/noto-widjet-project/static/js/main.52c84e35.js.map"
+    "main.da72ff00.css.map": "/noto-widjet-project/static/css/main.da72ff00.css.map",
+    "main.f8c392d4.js.map": "/noto-widjet-project/static/js/main.f8c392d4.js.map"
   },
   "entrypoints": [
-    "static/css/main.c5c18637.css",
-    "static/js/main.52c84e35.js"
+    "static/css/main.da72ff00.css",
+    "static/js/main.f8c392d4.js"
   ]
 }
