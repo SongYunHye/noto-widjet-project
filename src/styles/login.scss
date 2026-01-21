@@ -11,8 +11,10 @@
 
 .login-box {
   width: 100%;
-  max-width: 420px;
   padding: 48px 40px;
+  border: 1px solid $border-light;
+  border-radius: 16px;
+  max-width: 420px;
 }
 
 .login-header {
@@ -39,7 +41,7 @@
 .login-subtitle {
   margin: 5px 0 0;
   color: $text-medium;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .login-form {
@@ -133,12 +135,6 @@
   border: none;
   color: $text-gray;
   font-family: "Noto Sans KR", Roboto, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition-base;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  font-size: 12px;
+  text-decoration: underline;
 }
