@@ -27,7 +27,8 @@ function App() {
   const [inputValue, setInputValue] = useState('');
   const [dueDate, setDueDate] = useState(new Date());
   const [tag, setTag] = useState(''); // 태그
-  const [filter, setFilter] = useState('all'); // all, active, completed
+  const [filter, setFilter] = useState('all'); // all, active, completed (Daily, Weekly, Monthly)
+  const [statusFilter, setStatusFilter] = useState('all'); // all, in-progress, complete
   const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Daily 탭에서 선택된 날짜
   const [selectedWeekStart, setSelectedWeekStart] = useState(getWeekStartFromDate(getTodayDate())); // Weekly 탭에서 선택된 주의 시작일
   const [selectedMonth, setSelectedMonth] = useState(getTodayDate()); // Monthly 탭에서 선택된 월
@@ -389,6 +390,10 @@ function App() {
 
   // 필터링된 투두 리스트
   const filteredTodos = todos.filter(todo => {
+    // 상태 필터 적용
+    if (statusFilter === 'in-progress' && todo.completed) return false;
+    if (statusFilter === 'complete' && !todo.completed) return false;
+
     // Daily 탭: 선택된 날짜의 할 일만 표시
     if (filter === 'all') {
       return todo.dueDate === selectedDate;
@@ -445,13 +450,6 @@ function App() {
           Todoit
           <img src={logo} alt="Todo Logo" className="app-logo" />
         </h1>
-        {/* <button 
-          className="write-btn" 
-          onClick={openAddPopup}
-          aria-label="할 일 작성"
-        >
-          <img src={writeIcon} alt="Write" className="write-icon" />
-        </button> */}
         <button 
           className="menu-btn" 
           onClick={() => setMenuOpen(!menuOpen)}
@@ -783,6 +781,21 @@ function App() {
 
         {/* 투두 리스트 */}
         <div className={`cont-todolist ${backgroundType}`}>
+          <div className="todolist-header">
+            <div className="status-filter">
+              <Select
+                className="type_filter"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { value: 'all', label: 'All' },
+                  { value: 'in-progress', label: 'In progress' },
+                  { value: 'complete', label: 'Complete' },
+                ]}
+                placeholder="All"
+              />
+            </div>
+          </div>
           {filteredTodos.length === 0 ? (
             <div className="empty-state">
               No data yet :(

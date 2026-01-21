@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
-function Select({ value, onChange, options, placeholder = "Select an option" }) {
+function Select({ value, onChange, options, placeholder = "Select an option", className }) {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const selectRef = useRef(null);
@@ -107,7 +107,7 @@ function Select({ value, onChange, options, placeholder = "Select an option" }) 
     <div className="select-wrapper" ref={dropdownRef}>
       <div
         ref={selectRef}
-        className="select-display"
+        className={`select-display ${className}`}
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         tabIndex={0}
