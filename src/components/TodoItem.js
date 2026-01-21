@@ -1,7 +1,7 @@
 import React from 'react';
 import Checkbox from './Checkbox';
 
-function TodoItem({ todo, onToggle, onDelete, onEdit, onDragStart, onDragOver, onDragEnd }) {
+function TodoItem({ todo, onToggle, onToggleFavorite, onDelete, onEdit, onDragStart, onDragOver, onDragEnd }) {
   // 텍스트 길이가 30자 이상이면 전체 너비 사용
   const isLongText = todo.text.length > 30;
   
@@ -37,6 +37,22 @@ function TodoItem({ todo, onToggle, onDelete, onEdit, onDragStart, onDragOver, o
       </div>
 
       <div className="todo-actions">
+        <button
+          className={`todo-action-btn favorite ${todo.isFavorite ? 'active' : ''}`}
+          disabled={todo.completed}
+          onClick={() => onToggleFavorite(todo.id)}
+          title={todo.isFavorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+        >
+          {todo.isFavorite ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          )}
+        </button>
         <button
           className="todo-action-btn edit"
           disabled={todo.completed}

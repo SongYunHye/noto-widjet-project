@@ -1029,6 +1029,74 @@ button {
     justify-content: center;
     padding: 50px 0;
   }
+
+  &.favorite-list {
+    .favorite-group {
+      margin-bottom: 32px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .favorite-group-tag {
+      display: flex;
+      align-items: center;
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .favorite-group-tag-txt {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .tag-name {
+        z-index: 8;
+      }
+    }
+
+    .favorite-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .favorite-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgb(0 0 0 / 2%);
+      border-radius: 8px;
+      transition: $transition-base;
+
+      &:hover {
+        background: rgb(0 0 0 / 4%);
+      }
+
+      &.completed {
+        .favorite-item-text {
+          text-decoration: line-through;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .favorite-item-text {
+      flex: 1;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .favorite-item-date {
+      margin-left: 12px;
+      color: $text-light;
+      font-size: 11px;
+    }
+  }
 }
 
 .form-group {
@@ -2181,7 +2249,7 @@ button {
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding-left: 15px;
+  padding-left: 2px;
   gap: 4px;
 }
 
@@ -2229,7 +2297,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
+  width: 28px;
   height: 34px;
   border: none;
   color: $text-medium;
@@ -2243,6 +2311,39 @@ button {
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  &.favorite {
+    &.active {
+      svg {
+        color: #ff6b9d;
+        fill: #ff6b9d;
+      }
+    }
+
+    &:hover:not(:disabled) svg {
+      color: #ff6b9d;
+    }
+
+    &:disabled {
+      svg {
+        color: $text-medium;
+        fill: none;
+      }
+
+      &.active svg {
+        fill: $text-medium;
+      }
+    }
   }
 }
 
@@ -2316,7 +2417,7 @@ button {
   }
 
   .todo-item {
-    padding: 12px 14px;
+    padding: 8px 14px;
   }
 
   .todo-text {

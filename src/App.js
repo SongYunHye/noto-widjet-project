@@ -100,6 +100,7 @@ function App() {
       id: Date.now(),
       text: inputValue.trim(),
       completed: false,
+      isFavorite: false,
       dueDate: dueDate ? dueDate.toISOString().split('T')[0] : null,
       tag: tag.trim() || null,
       order: todos.length, // 순서 추가
@@ -114,6 +115,13 @@ function App() {
   const toggleTodo = (id) => {
     setTodos(todos.map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  // 즐겨찾기 토글
+  const toggleFavorite = (id) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, isFavorite: !todo.isFavorite } : todo
     ));
   };
 
@@ -519,6 +527,23 @@ function App() {
     .map(([tag, todos]) => [tag, sortByCompletion(todos)]);
   const untaggedTodos = sortByCompletion(groupedByTag['null'] || []);
 
+  // 즐겨찾기 투두 리스트
+  const favoriteTodos = todos.filter(todo => todo.isFavorite);
+  
+  // 즐겨찾기 투두를 태그별로 그룹화
+  const favoriteGroupedByTag = favoriteTodos.reduce((groups, todo) => {
+    const tagName = todo.tag || null;
+    if (!groups[tagName]) {
+      groups[tagName] = [];
+    }
+    groups[tagName].push(todo);
+    return groups;
+  }, {});
+
+  const favoriteTaggedGroups = Object.entries(favoriteGroupedByTag)
+    .filter(([tag]) => tag !== 'null')
+    .map(([tag, todos]) => [tag, todos]);
+  const favoriteUntaggedTodos = favoriteGroupedByTag['null'] || [];
 
   return (
     <div className={`App ${isMobile ? 'mobile' : 'desktop'}`}>
@@ -893,6 +918,7 @@ function App() {
                         todo={todo}
                         tagColor={todo.tag ? getTagColor(todo.tag).color : null}
                         onToggle={toggleTodo}
+                        onToggleFavorite={toggleFavorite}
                         onDelete={openDeleteConfirm}
                         onEdit={openEditPopup}
                         onDragStart={handleDragStart}
@@ -913,6 +939,7 @@ function App() {
                         key={todo.id}
                         todo={todo}
                         onToggle={toggleTodo}
+                        onToggleFavorite={toggleFavorite}
                         onDelete={openDeleteConfirm}
                         onEdit={openEditPopup}
                         onDragStart={handleDragStart}
@@ -1204,10 +1231,56 @@ function App() {
                 ✕
               </button>
             </div>
-            <div className="bottom-sheet-content">
-              <div className="empty-state">
-                즐겨찾기한 항목이 없습니다.
-              </div>
+            <div className="bottom-sheet-content favorite-list">
+              {favoriteTodos.length === 0 ? (
+                <div className="empty-state">
+                  즐겨찾기한 항목이 없습니다.
+                </div>
+              ) : (
+                <>
+                  {/* 태그가 있는 항목들 */}
+                  {favoriteTaggedGroups.map(([tag, todos]) => (
+                    <div key={tag} className="favorite-group">
+                      <h3 className="favorite-group-tag">
+                        <span className="favorite-group-tag-txt">
+                          <div 
+                            className="tag-color-box"
+                            style={{ backgroundColor: getTagColor(tag).color }}
+                          />
+                          <span className="tag-name">
+                            {tag}
+                          </span>
+                        </span>
+                      </h3>
+                      <div className="favorite-items">
+                        {todos.map(todo => (
+                          <div key={todo.id} className={`favorite-item ${todo.completed ? 'completed' : ''}`}>
+                            <span className="favorite-item-text">{todo.text}</span>
+                            {todo.dueDate && (
+                              <span className="favorite-item-date">{formatDate(todo.dueDate)}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  {/* 태그가 없는 항목들 */}
+                  {favoriteUntaggedTodos.length > 0 && (
+                    <div className="favorite-group">
+                      <div className="favorite-items">
+                        {favoriteUntaggedTodos.map(todo => (
+                          <div key={todo.id} className={`favorite-item ${todo.completed ? 'completed' : ''}`}>
+                            <span className="favorite-item-text">{todo.text}</span>
+                            {todo.dueDate && (
+                              <span className="favorite-item-date">{formatDate(todo.dueDate)}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </>
