@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import Login from './components/Login';
+import Signup from './components/Signup';
 import TodoApp from './components/TodoApp';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isSignupPage, setIsSignupPage] = useState(false);
 
   // 로그인 체크
   useEffect(() => {
@@ -18,6 +20,7 @@ function App() {
   // 로그인 핸들러
   const handleLogin = (email) => {
     setCurrentUser(email);
+    setIsSignupPage(false);
   };
 
   // 로그아웃 핸들러
@@ -26,9 +29,28 @@ function App() {
     setCurrentUser(null);
   };
 
-  // 로그인하지 않은 경우 로그인 페이지 표시
+  // 회원가입 성공 핸들러
+  const handleSignupSuccess = (email) => {
+    setCurrentUser(email);
+    setIsSignupPage(false);
+  };
+
+  // 회원가입 페이지로 이동
+  const goToSignup = () => {
+    setIsSignupPage(true);
+  };
+
+  // 로그인 페이지로 이동
+  const goToLogin = () => {
+    setIsSignupPage(false);
+  };
+
+  // 로그인하지 않은 경우
   if (!currentUser) {
-    return <Login onLogin={handleLogin} />;
+    if (isSignupPage) {
+      return <Signup onSignupSuccess={handleSignupSuccess} onBackToLogin={goToLogin} />;
+    }
+    return <Login onLogin={handleLogin} onGoToSignup={goToSignup} />;
   }
 
   // 로그인한 경우 Todo 앱 표시

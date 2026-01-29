@@ -51,6 +51,7 @@ function TodoApp({ currentUser, onLogout }) {
   const [colorPickerTag, setColorPickerTag] = useState(null); // 색상 선택 중인 태그
   const [editingTag, setEditingTag] = useState(null); // 편집 중인 태그
   const [editingTagValue, setEditingTagValue] = useState(''); // 편집 중인 태그 값
+  const [userInfo, setUserInfo] = useState({ name: '', nickname: '', email: '', thumbnail: '' }); // 사용자 정보
 
   // 디바이스 감지
   useEffect(() => {
@@ -65,6 +66,22 @@ function TodoApp({ currentUser, onLogout }) {
     window.addEventListener('resize', checkDevice);
     return () => window.removeEventListener('resize', checkDevice);
   }, []);
+
+  // 사용자 정보 불러오기
+  useEffect(() => {
+    if (currentUser) {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.email === currentUser);
+      if (user) {
+        setUserInfo({
+          name: user.name || '',
+          nickname: user.nickname || '',
+          email: user.email || '',
+          thumbnail: user.thumbnail || ''
+        });
+      }
+    }
+  }, [currentUser]);
 
   // 사용자별 todos 불러오기
   useEffect(() => {
@@ -293,6 +310,10 @@ function TodoApp({ currentUser, onLogout }) {
 
   // 할 일 추가 팝업 열기
   const openAddPopup = () => {
+    // 메뉴가 열려있으면 먼저 닫기
+    if (menuOpen) {
+      closeMenu();
+    }
     // 검색 팝업이 열려있으면 먼저 닫기
     if (searchPopupOpen) {
       setSearchPopupOpen(false);
@@ -311,6 +332,10 @@ function TodoApp({ currentUser, onLogout }) {
 
   // 검색 팝업 열기
   const openSearchPopup = () => {
+    // 메뉴가 열려있으면 먼저 닫기
+    if (menuOpen) {
+      closeMenu();
+    }
     // 기존 팝업이 열려있으면 먼저 닫기
     if (addPopupOpen || editingTodo) {
       setAddPopupOpen(false);
@@ -342,6 +367,10 @@ function TodoApp({ currentUser, onLogout }) {
 
   // 즐겨찾기 팝업 열기
   const openFavoritePopup = () => {
+    // 메뉴가 열려있으면 먼저 닫기
+    if (menuOpen) {
+      closeMenu();
+    }
     // 기존 팝업이 열려있으면 먼저 닫기
     if (addPopupOpen || editingTodo) {
       setAddPopupOpen(false);
@@ -640,7 +669,13 @@ function TodoApp({ currentUser, onLogout }) {
         </h1>
         <button 
           className="menu-btn" 
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => {
+            if (menuOpen) {
+              closeMenu();
+            } else {
+              setMenuOpen(true);
+            }
+          }}
           aria-label="메뉴"
         >
           <span className="menu-btn-icon"></span>
@@ -669,6 +704,24 @@ function TodoApp({ currentUser, onLogout }) {
                 ✕
               </button>
             </div>
+            
+            {/* 사용자 정보 */}
+            <div className="user-info-container">
+              <div className="user-thumbnail">
+                {userInfo.thumbnail ? (
+                  <img src={userInfo.thumbnail} alt={userInfo.nickname} className="user-thumbnail-image" />
+                ) : (
+                  <div className="user-thumbnail-default">
+                    <img src={logo} alt="기본 썸네일" className="user-thumbnail-icon" />
+                  </div>
+                )}
+              </div>
+              <div className="user-info-text">
+                <p className="user-nickname">{userInfo.nickname || '사용자'}</p>
+                <p className="user-email">{userInfo.email}</p>
+              </div>
+            </div>
+
             <nav className="side-menu-nav">
               <ul>
                 <li onClick={closeMenu}>

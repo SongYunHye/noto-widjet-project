@@ -7,14 +7,23 @@ $text-dark: #2c3239;
 $text-medium: #777;
 $text-light: #b5b7b9;
 $text-gray: #95a5a6;
-$bg-light: #FCF6F5;
+$bg-light: #e5e5e5;
 $bg-white: #fff;
+$bg-medium: #d3d3d3;
 $border-light: rgb(0 0 0 / 10%);
 $border-dark: rgb(0 0 0 / 50%);
 $border-gray: rgb(132 250 176 / 15%);
 $input-color: #e6e7e8;
 $input-color-hover: #6a6e73;
 $input-placeholder: #8F9396;
+
+// 버튼 색상 변수
+$btn-primary: #2bae661a;
+$btn-primary-hover: #2bae6633;
+$btn-primary-active: #2bae6666;
+$btn-primary-disabled: #2bae6680;
+$btn-gray: #0000000d;
+$btn-gray-hover: #0000001a;
 
 // 크기 변수
 $border-radius-sm: 12px;

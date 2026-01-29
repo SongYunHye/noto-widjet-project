@@ -41,6 +41,100 @@ button {
   overflow: hidden;
 }
 
+.screen-out {
+  position: absolute;
+  width: 0;
+  height: 0;
+  line-height: 0;
+  overflow: hidden;
+  text-indent: -9999px;
+  font: 0 / 0 a;
+}
+
+/* 공통 폼 요소 */
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: $text-dark;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.text-input {
+  width: 100%;
+  padding: 10px 16px;
+  background: $bg-white;
+  border: 1px solid $input-color;
+  border-radius: $border-radius-sm;
+  color: $text-dark;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  transition: $transition-base;
+  outline: none;
+
+  &::placeholder {
+    color: $input-placeholder;
+  }
+
+  &:focus {
+    border-color: $input-color-hover;
+  }
+
+  &:disabled {
+    background: $bg-light;
+    color: $text-medium;
+    cursor: not-allowed;
+  }
+}
+
+/* 버튼 컴포넌트 */
+.btn-common {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &.btn-primary {
+    background: $btn-primary;
+    color: $text-dark;
+
+    &:active:not(:disabled),
+    &:hover:not(:disabled) {
+      background: $btn-primary-hover;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: $bg-light;
+      color: $text-medium;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-gray {
+    background: $btn-gray;
+    color: $text-dark;
+
+    &:active:not(:disabled),
+    &:hover:not(:disabled) {
+      background: $btn-gray-hover;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: $bg-light;
+      color: $text-medium;
+      cursor: not-allowed;
+    }
+  }
+}
+
 /* 체크박스 컴포넌트 */
 .item_checkbox {
   position: relative;

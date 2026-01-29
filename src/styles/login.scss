@@ -15,6 +15,10 @@
   border: 1px solid $border-light;
   border-radius: 16px;
   max-width: 420px;
+
+  &.signup-box {
+    max-width: 480px;
+  }
 }
 
 .login-header {
@@ -73,25 +77,31 @@
   font-weight: 600;
 }
 
-.login-input {
-  width: 100%;
-  padding: 10px 16px;
-  border: 1px solid $input-color;
-  border-radius: $border-radius-sm;
-  color: $text-dark;
-  font-family: "Noto Sans KR", Roboto, sans-serif;
-  font-size: 14px;
-  transition: $transition-base;
-  outline: none;
+// .login-input {
+//   width: 100%;
+//   padding: 10px 16px;
+//   border: 1px solid $input-color;
+//   border-radius: $border-radius-sm;
+//   color: $text-dark;
+//   font-family: "Noto Sans KR", Roboto, sans-serif;
+//   font-size: 14px;
+//   transition: $transition-base;
+//   outline: none;
 
-  &::placeholder {
-    color: $input-placeholder;
-  }
+//   &::placeholder {
+//     color: $input-placeholder;
+//   }
 
-  &:focus {
-    border-color: $input-color-hover;
-  }
-}
+//   &:focus {
+//     border-color: $input-color-hover;
+//   }
+
+//   &:disabled {
+//     background: $bg-light;
+//     color: $text-medium;
+//     cursor: not-allowed;
+//   }
+// }
 
 .login-btn {
   width: 100%;
@@ -138,4 +148,208 @@
   font-family: "Noto Sans KR", Roboto, sans-serif;
   font-size: 12px;
   text-decoration: underline;
+  cursor: pointer;
+}
+
+/* 회원가입 페이지 추가 스타일 */
+.signup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border-light;
+  margin-bottom: 16px;
+}
+
+.input-with-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .login-input {
+    flex: 1;
+  }
+}
+
+.input-with-timer {
+  position: relative;
+  flex: 1;
+
+  .login-input {
+    width: 100%;
+    padding-right: 70px; // 타이머 공간 확보
+  }
+}
+
+/* 사용자 정보 섹션 */
+.user-info-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+
+  @media (width <=480px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.user-info-left {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-info-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.thumbnail-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.thumbnail-wrapper {
+  position: relative;
+}
+
+.thumbnail-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: $bg-white;
+  border: 1px solid $input-color;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $input-color-hover;
+  }
+}
+
+.thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.thumbnail-default-icon {
+  width: auto;
+  height: 48px;
+  object-fit: contain;
+}
+
+.thumbnail-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: $text-dark;
+  border: 2px solid $bg-white;
+  border-radius: 50%;
+  color: $bg-white;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: #ff4757;
+  }
+}
+
+.thumbnail-hint {
+  margin: 0;
+  color: $text-gray;
+  font-size: 11px;
+  text-align: center;
+}
+
+.btn-verify {
+  width: auto;
+  min-width: 80px;
+  white-space: nowrap;
+}
+
+.input-hint {
+  margin: -4px 0 0;
+  padding: 0;
+  font-size: 12px;
+
+  &.error {
+    color: #ff4757;
+  }
+}
+
+.timer-text {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: $primary-color;
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* 토스트 메시지 */
+.toast-message {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  z-index: 9999;
+  padding: 16px 24px;
+  background: rgb(44 50 57 / 95%);
+  border-radius: $border-radius-sm;
+  color: $bg-white;
+  font-family: "Noto Sans KR", Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  white-space: pre-line;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+  transform: translateX(-50%);
+  animation: toast-slide-up 0.3s ease-out;
+
+  @media (width <=480px) {
+    bottom: 30px;
+    max-width: calc(100% - 40px);
+    font-size: 13px;
+  }
+}
+
+@keyframes toast-slide-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
